@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='UTF-8'>
+    <title>文档的标题</title>
+    <style type='text/css'>
+    </style>
+    <script type='text/javascript'>
+    </script>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    {{message}}
+    <div class="app">
+        <!-- 插值表达式 -->
+        {{message}}
+        <h2>
+            {{school.myname}}
+            {{school.mobile}}
+        </h2>
+        <ul>
+            <li>
+                {{compus[0]}}
+            </li>
+            <li>
+                {{compus[1]}}
+            </li>
+        </ul>
+    </div>
+    <p>
+        test
+    </p>
+    <p>
+        test2
+    </p>
+</body>
+<script>
+    // vue会管理 el 挂载点命中的元素及其内部的后代元素
+    var app = new Vue({
+        // 设置挂载点
+
+        el: '.app',
+        // 设置数据对象
+        data: {
+            message: "Hello Vue",
+            school: {
+                myname: "李毅",
+                mobile: "15144849101"
+            },
+            compus: ['nankai', 'tinghua']
+        }
+    })
+</script>
+
+</html>
