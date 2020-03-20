@@ -10,7 +10,7 @@
     </script>
     <!-- 开发环境版本，包含了有帮助的命令行警告 -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
+</head>ZZZZPOGZF
 
 <body>
     {{message}}
@@ -33,7 +33,12 @@
     <p>
         test
     </p>
+    
+    <div id="app2">
+        <h2 v-text="message+'!' ">
 
+        </h2>
+    </div>
     
 </body>
 <script>
@@ -49,6 +54,12 @@
                 mobile: "15144849101"
             },
             compus: ['nankai', 'tinghua']
+        }
+    })
+    var app2 =new Vue({
+        el:'#app2',
+        data:{
+            message:"李毅"
         }
     })
 </script>
