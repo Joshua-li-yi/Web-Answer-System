@@ -1479,10 +1479,7 @@ input::-webkit-input-placeholder {
     background-position: 0 -24px;
 }
 
-/*login-register-popup*/
-.wall-pop-main .wall-icon {
-    background-image: url("https://image.zhihuishu.com/testzhs/ablecommons/demo/201612/0ec7437b96dd44c89f2c39c6c5d1683d.png");
-}
+
 
 .wall-pop-main {
     position: relative;
@@ -2061,4 +2058,13 @@ input::-webkit-input-placeholder {
 }
 .nameMatch-main-wrap input:-ms-input-placeholder { /* Internet Explorer 10-11 */
     color: #BFBFBF;
+}
+
+/* 主要登陆界面上的图标 */
+.mainSignInicon{
+    height: 24px;
+}
+.wallMain{
+    position: relative; 
+    height: 100%;
 }

@@ -6,18 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>答题系统</title>
-    <link rel="icon" href="./img/1.jpg" style="width: auto;">
+    <link rel="icon" href="./img/1.png" style="width: auto;">
     <link rel="stylesheet" href="./css/index.css" />
-    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 生产环境版本，优化了尺寸和速度 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <!-- 官网提供的 axios 在线地址 -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="./js/index.js" type="text/javascript"></script>
 </head>
-
-<body>
-
-    <body class="wall-body vsc-initialized">
+<body class="wall-body vsc-initialized">
+    <div id="SignInWnd">
         <!-- 禁止登录弹出层 -->
         <div class="shadow-layer" style="display: none"></div>
         <div class="error-tips-pop clearfix" id="" style="display: none">
@@ -39,25 +37,31 @@
 
         <!--wall-warp-->
         <div class="wall-warp">
-            <div class="wall-main" style="position: relative; height: 100%;">
-                <div class="wall-icon wall-logo"
-                    style="background: url(&quot;//image.zhihuishu.com/zhs/ablecommons/demo/201812/e67093aa50fa477d842b98fe8b04d645.png&quot;) center center / auto 100% no-repeat;">
+            <div class="wallMain">
+                <!-- <div id="mainSignInWnd"> -->
+                <!-- 登陆上面的图标 -->
+                <div class="mainSignInicon">
+                    <img src="./img/1.png" alt="" style="height: 89px; margin-left: 100px;">
                 </div>
+                <!-- 选择登陆方式 -->
                 <div class="switch-nav-wrap">
-                    <div class="switch-nav new-switch-wall  active">
-                        <a href="#signin" id="qSignin" class="cur">手机号</a>
-                        <a href="#studentID" id="qStudentID">学号</a>
+                    <div class="switch-nav new-switch-wall  active" id="changeSignInWay"></div>
+                        {{a}}
+                        <a href="#signin" id="qSignin" class="cur" onclick='phoneWay()'>手机号</a>
+                        <!-- <span @click='phoneWay'>手机号</span> -->
+                        <a href="#studentID" id="qStudentID" @click='studentIDWay'>学号</a>
+                        <!-- <span  @click='studentIDWay'>学号</span> -->
+                        <span @click='teacherIDWay'>教师工号登录</span>
                         <a id="qSignup" class="registerNum-btn fr"
                             href="javascript:userindex.forwardRegister(-1);">注册</a>
                         <span class="cur-border-bottom"></span>
                     </div>
-                    <div class="teachId-wrap new-switch-wall" style="margin-top: -8px;">教师工号登录</div>
                 </div>
                 <!--登录-->
-                <form action="https://passport.zhihuishu.com/login" method="post" id="f_sign_up">
-                    <div class="switch-wrap switch-wrap-signin active">
-                        <!--手机号-->
-                        <ul class="phoneMumber-list wall-form-ipt-list active">
+                <form action="https://passport.zhihuishu.com/login" method="post" id="f_sign_up" >
+                    <!--手机号-->
+                    <ul class="phoneMumber-list wall-form-ipt-list active" v-if='phoneWayShow'>
+                        <div id="phoneNumberSignIn">
                             <li>
                                 <input type="hidden" name="lt"
                                     value="LT-3177948-oLHvXjyzoGLOtbUp2eKrldM2kf6nin-passport.zhihuishu.com">
@@ -65,15 +69,18 @@
                                 <input type="hidden" name="_eventId" value="submit">
                                 <i></i>
                                 <input type="text" placeholder="请输入手机号" value=""
-                                    onfocus="hideErrorInfo('form-ipt-error-l-username');" name="username"
-                                    id="lUsername">
+                                    onfocus="hideErrorInfo('form-ipt-error-l-username');" name="username" id="lUsername"
+                                    v-model='phoneNumber'>
+                                <!-- <h2>{{phoneNumber}}</h2> -->
                                 <span class="form-ipt-error errorico-em" id="form-ipt-error-l-username">请输入手机号</span>
                                 <em class="Partitionline-em"></em>
                             </li>
                             <li class="clearPassword-ico">
                                 <input type="password" placeholder="请输入密码" value="" name="password"
-                                    onfocus="hideErrorInfo('form-ipt-error-l-password');" id="lPassword">
+                                    onfocus="hideErrorInfo('form-ipt-error-l-password');" id="lPassword"
+                                    v-model='phonePwd'>
                                 <label class="form-ipt-error errorico-em" id="form-ipt-error-l-password">请输入密码</label>
+                                <!-- <h2>{{phonePwd}}</h2> -->
                                 <i class="pasword-icon"></i>
                                 <em class="Partitionline-em"></em>
                             </li>
@@ -88,10 +95,12 @@
                                     src="/user/imageCaptcha" style="cursor: pointer;">
                                 <em class="Partitionline-em"></em>
                             </li>
-                        </ul>
-                        <!--手机号-->
-                        <!--学号-->
-                        <ul class="studentID-list wall-form-ipt-list">
+                        </div>
+                    </ul>
+                    <!--手机号-->
+                    <!--学号-->
+                    <ul class="studentID-list wall-form-ipt-list" v-if='studentIDWayShow'>
+                        <div id="studentIDSignIn">
                             <li>
                                 <div class="new-schoolSearch-wall validate-school-search-wrap">
                                     <input type="hidden" id="clSchoolId">
@@ -142,10 +151,12 @@
                                     src="/user/imageCaptcha" style="cursor: pointer;">
                                 <label class="form-ipt-error errorico-em" id="form-ipt-code-img-error">请填写验证码</label>
                             </li>
-                        </ul>
-                        <!--学号-->
-                        <!--教师工号-->
-                        <ul class="teacherID-list wall-form-ipt-list">
+                        </div>
+                    </ul>
+                    <!--学号-->
+                    <!--教师工号-->
+                    <ul class="teacherID-list wall-form-ipt-list" v-if='techerIDWayShow'>
+                        <div id="techerIDSignIn">
                             <li>
                                 <div class="new-schoolSearch-wall validate-school-search-wrap">
                                     <input type="hidden" id="tlSchoolId">
@@ -196,415 +207,415 @@
                                     onclick="getvalidateCode('j-captcha-img-tcode')" alt="图片验证码" title="看不清？换一张"
                                     src="/user/imageCaptcha" style="cursor: pointer;">
                             </li>
+                        </div>
+                    </ul>
+
+                    <span class="wall-sub-btn" onclick="formSignUp();">登&nbsp;&nbsp;录</span>
+                    <div class="signin-misc-wrap clearfix">
+                        <label class="remember-btn fl">
+                            <input type="checkbox" name="remember" checked="">记住我
+                        </label>
+                        <img src="//image.zhihuishu.com/zhs/ablecommons/demo/201907/eaa1099005894a228eb94c3b1573995e.png"
+                            class="remember-img">
+                        <a class="forget-btn fr" href="javascript:void(0);">忘记密码</a>
+                        <a id="" class="Return-btn new-wall-icon" onclick="userindex.backSignin();" href="#signin"></a>
+                    </div>
+
+                    <div id="bottomDiv">
+                        <div class="other-signin-way-tit"><span>其他登录方式</span></div>
+                        <ul class="other-signin-way-list clearfix">
+                            <li class="signin-way-qq fl"><a class="wall-icon wall-qq"
+                                    href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=101137284&amp;redirect_uri=http%3A%2F%2Fuser.zhihuishu.com%2Fopen%2FQQCallbackDispatcher.do%3Fclient_name%3DQQClient&amp;state=a052nNub6K"></a><span
+                                    class="wall-icon"></span></li>
+
+                            <li class="signin-way-shjiaoyu"><a class="wall-icon wall-weixin"
+                                    href="https://open.weixin.qq.com/connect/qrconnect?appid=wx2734fc59fbd00c95&amp;redirect_uri=https://user.zhihuishu.com/zhsuser/oauth/weixin/wxLogin?service=https://onlineservice.zhihuishu.com/login/gologin&amp;response_type=code&amp;scope=snsapi_login&amp;state=STATE#wechat_redirect"></a><span
+                                    class="wall-icon"></span></li>
                         </ul>
-
-                        <span class="wall-sub-btn" onclick="formSignUp();">登&nbsp;&nbsp;录</span>
-                        <div class="signin-misc-wrap clearfix">
-                            <label class="remember-btn fl"><input type="checkbox" name="remember" checked="">记住我</label>
-                            <img src="//image.zhihuishu.com/zhs/ablecommons/demo/201907/eaa1099005894a228eb94c3b1573995e.png"
-                                class="remember-img">
-                            <a class="forget-btn fr" href="javascript:void(0);">忘记密码</a>
-                            <a id="" class="Return-btn new-wall-icon" onclick="userindex.backSignin();"
-                                href="#signin"></a>
-                        </div>
-
-
-
-
-
-
-
-                        <div id="bottomDiv">
-                            <div class="other-signin-way-tit"><span>其他登录方式</span></div>
-                            <ul class="other-signin-way-list clearfix">
-                                <li class="signin-way-qq fl"><a class="wall-icon wall-qq"
-                                        href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=101137284&amp;redirect_uri=http%3A%2F%2Fuser.zhihuishu.com%2Fopen%2FQQCallbackDispatcher.do%3Fclient_name%3DQQClient&amp;state=a052nNub6K"></a><span
-                                        class="wall-icon"></span></li>
-                                <li class="signin-way-teachId fr"><a class="new-wall-icon" href="#teacherID">教工号登录</a>
-                                </li>
-                                <li class="signin-way-shjiaoyu"><a class="wall-icon wall-weixin"
-                                        href="https://open.weixin.qq.com/connect/qrconnect?appid=wx2734fc59fbd00c95&amp;redirect_uri=https://user.zhihuishu.com/zhsuser/oauth/weixin/wxLogin?service=https://onlineservice.zhihuishu.com/login/gologin&amp;response_type=code&amp;scope=snsapi_login&amp;state=STATE#wechat_redirect"></a><span
-                                        class="wall-icon"></span></li>
-                            </ul>
-                            <p class="other-signin-way-ques" id="other-signin-way-ques-p"
-                                style="position:absolute;bottom:57px; left:30px;">如登录、注册遇到问题，请<a
+                        <p class="other-signin-way-ques" id="other-signin-way-ques-p"
+                            style="position:absolute;bottom:57px; left:30px;">如登录、注册遇到问题，请<a class="js-service-support">
+                                联系客服</a></p>
+                    </div>
+                    <div id="bottomTchDiv">
+                        <div class="login-bottom-box">
+                            <div class="other-signin-way-tit"><span>其他登录方式</span></div><a class="tch-back"
+                                href="https://passport.zhihuishu.com/login#signin">手机号/学号登录</a>
+                            <p class="other-signin-way-ques" style="margin: 30px auto 0;">如登录、注册遇到问题，请<a
                                     class="js-service-support"> 联系客服</a></p>
-                        </div>
-                        <div id="bottomTchDiv">
-                            <div class="login-bottom-box">
-                                <div class="other-signin-way-tit"><span>其他登录方式</span></div><a class="tch-back"
-                                    href="https://passport.zhihuishu.com/login#signin">手机号/学号登录</a>
-                                <p class="other-signin-way-ques" style="margin: 30px auto 0;">如登录、注册遇到问题，请<a
-                                        class="js-service-support"> 联系客服</a></p>
-                            </div>
                         </div>
                     </div>
                 </form>
 
-            </div>
-        </div>
-        <!-- 输入短信验证码弹窗 -->
-        <div class="msg-code-ipt-pop" style="display: none;">
-            <h2 class="msg-code-ipt-tit">验证手机</h2>
-            <span class="msg-code-instructions">请输入您收到的 4 位数短信验证码</span>
-            <ul class="wall-form-ipt-list">
-                <li>
-                    <input type="text" id="rAccountVi" disabled="disabled">
-                    <i></i>
-                </li>
-                <li class="msg-ipt-item class:msg-ipt-item">
-                    <input type="text" id="rMobileCode" placeholder="输入4位数验证码" maxlength="4">
-                    <label class="form-ipt-error errorico-em" id="form-ipt-error-r-mobile-code">请输入验证码</label>
-                    <i class="message-icon"></i>
-                    <span class="send-msg-code-btn" onclick="javascript:void(0);">60s 后重发</span>
-                </li>
-            </ul>
-            <span class="wall-sub-btn wall-sub-btn-jump" id="btn-sign_up"
-                onclick="sign_up_mobile_or_email();">进入智慧树</span>
-        </div>
-        <!-- 输入邮件验证码弹窗 -->
-        <div class="msg-code-ipt-pop-email" style="display: none;">
-            <h2 class="msg-code-ipt-tit">验证邮箱</h2>
-            <span class="msg-code-instructions">请输入您收到的 4 位数邮箱验证码</span>
-            <ul class="wall-form-ipt-list">
-                <li>
-                    <input type="text" id="rAccountViEmail" disabled="disabled">
-                </li>
-                <li class="msg-ipt-item class:msg-ipt-item">
-                    <input type="text" id="rEmailCode" placeholder="输入4位数验证码" maxlength="4">
-                    <label class="form-ipt-error errorico-em" id="form-ipt-error-r-email-code">请输入验证码</label>
-                    <span class="send-msg-email-code-btn" onclick="javascript:void(0);">60s 后重发</span>
-                </li>
-            </ul>
-            <span class="wall-sub-btn wall-sub-btn-jump" id="btn-sign_up"
-                onclick="sign_up_mobile_or_email();">进入智慧树</span>
-        </div>
-        <!-- 输入短信验证码弹窗 -->
+                <!-- </div> -->
 
-        <!-- 找回密码弹窗 -->
-        <div class="forget-ipt-pop" style="display: none;">
-            <div class="find-msg-code-ipt-pop">
-                <h2 class="msg-code-ipt-tit">找回密码</h2>
-                <span class="msg-code-instructions">验证码将会发送至您的注册手机</span>
-                <ul class="wall-form-ipt-list">
-                    <li>
-                        <input type="text" placeholder="手机号" onfocus="hideErrorInfo('form-ipt-error-find');"
-                            id="findUsername">
-                        <label class="form-ipt-error errorico-em" id="form-ipt-error-find">该手机号尚未注册智慧树</label>
-                        <i></i>
-                        <em class="Partitionline-em"></em>
-                    </li>
-                    <li class="pic-code-item">
-                        <input type="text" placeholder="请输入验证码" id="findImgCode" maxlength="4"
-                            onfocus="hideErrorInfo('form-ipt-error-code-find');" onblur="findpwd.validateImgCode();">
-                        <label class="form-ipt-error errorico-em" id="form-ipt-error-code-find">请输入正确的验证码</label>
-                        <img class="pic-validate-code" id="imgCodeByFindPwd" style="cursor: pointer;" title="看不清？换一张"
-                            onclick="getvalidateCode('imgCodeByFindPwd');" src="/user/imageCaptcha?">
-                        <i class="pic-code-icon"></i>
-                        <em class="Partitionline-em"></em>
-                    </li>
-                </ul>
-                <span class="wall-sub-btn wall-sub-btn-jump" id="getValidateCode"
-                    onclick="findpwd.sendMsg();">获取验证码</span>
-                <p class="other-signin-way-ques" style="margin: 15px auto 5px;padding-bottom: 15px;">
-                    <a class="fl" onclick="forget_phone.pop('忘记手机号')">忘记手机号</a>
-                    <a class="js-service-support fr">联系客服</a>
-                </p>
             </div>
-            <div class="find-msg-code-ipt-pop" style="display: none;">
-                <span class="fall-back" title="返回"></span>
-                <h2 class="msg-code-ipt-tit">重设密码</h2>
-                <span class="msg-code-instructions">验证码将会发送至您的注册手机</span>
+            <!-- 输入短信验证码弹窗 -->
+            <div class="msg-code-ipt-pop" style="display: none;">
+                <h2 class="msg-code-ipt-tit">验证手机</h2>
+                <span class="msg-code-instructions">请输入您收到的 4 位数短信验证码</span>
                 <ul class="wall-form-ipt-list">
                     <li>
-                        <input type="text" id="fUsernamePop" disabled="disabled">
+                        <input type="text" id="rAccountVi" disabled="disabled">
                         <i></i>
-                        <em class="Partitionline-em"></em>
                     </li>
-                    <li class="msg-ipt-item">
-                        <input type="text" placeholder="请输入手机验证码" id="findMobileCode" maxlength="4"
-                            onfocus="hideErrorInfo('form-ipt-error-find-mobile-code');"
-                            onblur="findpwd.validateMobileCode();">
-                        <label class="form-ipt-error errorico-em"
-                            id="form-ipt-error-find-mobile-code">请输入正确的短信验证码</label>
+                    <li class="msg-ipt-item class:msg-ipt-item">
+                        <input type="text" id="rMobileCode" placeholder="输入4位数验证码" maxlength="4">
+                        <label class="form-ipt-error errorico-em" id="form-ipt-error-r-mobile-code">请输入验证码</label>
                         <i class="message-icon"></i>
-                        <em class="Partitionline-em"></em>
-                        <span class="send-msg-code-btn" id="send-msg-code-btn-find">60s 后重发</span>
-                    </li>
-                    <li class="pw-code-item">
-                        <input type="hidden" id="findPassword">
-                        <input class="ipt-password-show" id="ipt-password-show"
-                            onfocus="hideErrorInfo('form-ipt-error-find-password');"
-                            onblur="findpwd.validatePassword('ipt-password-show');" style="display: none;" type="text"
-                            placeholder="请输入8-16位，大小写字母+数字的组合密码">
-                        <input class="ipt-password-hide" id="ipt-password-hide"
-                            onfocus="hideErrorInfo('form-ipt-error-find-password');"
-                            onblur="findpwd.validatePassword('ipt-password-hide');" type="password"
-                            placeholder="请输入8-16位，大小写字母+数字的组合密码">
-                        <label class="form-ipt-error errorico-em" id="form-ipt-error-find-password">请输入密码</label>
-                        <i class="pasword-icon"></i>
-                        <em class="Partitionline-em"></em>
-                        <span class="wall-icon show-password-find" id="showAndHidePassword" title="显示密码"></span>
+                        <span class="send-msg-code-btn" onclick="javascript:void(0);">60s 后重发</span>
                     </li>
                 </ul>
-                <span class="wall-sub-btn wall-sub-btn-jump" onclick="findpwd.resetPassword();">重设密码</span>
-                <p class="other-signin-way-ques" style="margin: 46px auto 5px;">如登录、注册遇到问题，请<a
-                        class="js-service-support"> 联系客服</a></p>
+                <span class="wall-sub-btn wall-sub-btn-jump" id="btn-sign_up"
+                    onclick="sign_up_mobile_or_email();">进入智慧树</span>
             </div>
-        </div>
-        <!-- 找回密码弹窗 -->
-        <form action="https://passport.zhihuishu.com/user/nameMatchForward" method="post" id="nameMatchForward">
-            <input type="hidden" name="realName" id="chRealName">
-            <input type="hidden" name="code" id="chCode">
-            <input type="hidden" name="schoolId" id="chSchoolId">
-            <input type="hidden" name="flag" id="chFlag">
-            <input type="hidden" name="pwd" id="chPwd">
-            <input type="hidden" name="service" id="chService">
-            <input type="hidden" name="initPwd" id="chInitPwd">
-            <input type="hidden" name="loginType" id="chLoginType">
-        </form>
-        <!-- 姓名验证弹框 -->
-        <div class="nameMatch-pop" style="display: none;">
-            <input type="hidden" value="" id="clRealName">
-            <div class="nameMatch-title">输入姓名</div>
-            <p class="nameMatch-p">请输入你的姓名，确保学号无误</p>
-            <div class="nameMatch-main-wrap">
-                <input class="nameMatch-text" type="text" maxlength="1" id="clRealNameMatch"
-                    onfocus="userindex.clearErrorNameMatch();"><span class="name-sp-info" id="realnameMatch"></span>
-                <!--移除notMatch-tips显示输入框-->
-                <span class="notMatch-tips errorico-em" id="nameMatchErrorShow"
-                    style="left: 50%; bottom: 6px; margin-left: -44px;">姓名和账户不匹配</span>
-                <!--移除is-visible提示信息隐藏-->
-            </div>
-            <span class="identifyMatch wall-sub-btn" style="margin: 30px auto 0;"
-                onclick="userindex.nameMatch();">确定</span>
-        </div>
-        <!-- 姓名验证弹框  -->
-
-        <!-- 无导入姓名验证弹框 -->
-        <div class="nameMatch-pop-w" style="display: none;">
-            <div class="nameMatch-title">输入姓名</div>
-            <p class="nameMatch-p">请输入你的姓名,确保学号无误</p>
-            <div class="nameMatch-main-wrap">
-                <input class="nameMatch-text-w" placeholder="输入真实姓名" type="text" maxlength="64" id="wclRealNameMatch"
-                    onfocus="userindex.clearErrorNameMatchW();">
-                <!--移除notMatch-tips显示输入框-->
-                <span class="notMatch-tips errorico-em" id="nameMatchErrorShowW">请输入姓名</span>
-                <!--移除is-visible提示信息隐藏-->
-            </div>
-            <span class="identifyMatch wall-sub-btn" onclick="userindex.nameMatchW();">确定</span>
-        </div>
-        <!-- 姓名验证弹框  -->
-
-
-        <!-- 无导入姓名验证弹框 -->
-        <div class="notImport-pop" style="display: none;">
-            <div class="zhs-logo"><img
-                    src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/b2eec8eee181439ea6678e6e34cf3cc9.png"></div>
-            <p class="notImport-tips">学校暂未向系统导入你的相关信息，你可以先完善信息，学校一旦完成导入，我们将通过知到App第一时间通知你确认课程</p>
-            <div class="validate-error-tip-btn-wrap clearfix">
-                <span class="app-tip-btn ws-tip-btn app-pr fl" onclick="">下载App
-                    <span class="app-QrCode"><img
-                            src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/38be50a26e5f441cbd0bddd19dd9a9a5.png"></span>
-                </span>
-                <span class="ws-tip-btn fr" onclick="userindex.toPerfectInfo();">去完善</span>
-            </div>
-        </div>
-        <!-- 姓名验证弹框  -->
-
-        <!-- 数据联动弹框 -->
-        <div class="infoTips-pop-t" style="display: none;">
-            <p class="notImport-tips">您输入的信息和数据中心不匹配请核对后重新输入</p>
-            <div class="validate-error-tip-btn-wrap clearfix">
-                <a class="reenter-link" href="javascript:userindex.closeShujuliandong();">重新输入</a>
-            </div>
-        </div>
-        <!-- 数据联动弹框  -->
-        <!-- 密码简单 pop-->
-        <div class="simplePassword-pop  clearfix" id="simplePassword-div" style="display: none;">
-            <img class="warning-img"
-                src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/fe4b61657da447328d22cddc5eae973b.png">
-            <p class="simple-password">登录密码过于简单</p>
-            <p class="mdify-tips">为保障您的账户安全请修改密码</p>
-            <div class="modify-password-btn course-layer-btn">
-                <a class="btn0" onclick="submitSignUp()">暂不修改</a><a class="btn1"
-                    onclick="showModifySimplePass()">立即修改</a>
-            </div>
-        </div>
-        <!-- 密码简单  pop-->
-
-        <!-- 修改密码 pop-->
-        <div class="simplePassword-pop  clearfix" id="revisePassword-div" style="display: none;">
-            <h2 class="revisePassword-tit revisePassword-tit-h2">修改密码</h2>
-            <div class="revisePassword-box clearfix">
-                <ul class="revisePassword-list clearfix">
-                    <li class="clearfix">
-                        <span class="daily-label fl">密码</span>
-                        <div class="daily-input-inline  fl" style="width: 300px">
-                            <input class="layui-input" style="width:280px;padding-left:0px;" id="oldPassword"
-                                type="password" placeholder="请输入账号当前密码" maxlength="16">
-                            <span class="empty-ico"></span>
-                        </div>
+            <!-- 输入邮件验证码弹窗 -->
+            <div class="msg-code-ipt-pop-email" style="display: none;">
+                <h2 class="msg-code-ipt-tit">验证邮箱</h2>
+                <span class="msg-code-instructions">请输入您收到的 4 位数邮箱验证码</span>
+                <ul class="wall-form-ipt-list">
+                    <li>
+                        <input type="text" id="rAccountViEmail" disabled="disabled">
                     </li>
-                    <li class="clearfix">
-                        <span class="daily-label fl">新密码</span>
-                        <div class="daily-input-inline  fl" style="width: 300px">
-                            <input class="layui-input" style="width:280px;padding-left:0px;" id="newPassword"
-                                type="password" placeholder="请输入8-16位，大小写字母+数字的组合密码" maxlength="16">
-                            <span class="empty-ico"></span>
-                        </div>
-                    </li>
-                    <li class="clearfix">
-                        <span class="daily-label fl">确认密码</span>
-                        <div class="daily-input-inline  fl" style="width: 300px">
-                            <input class="layui-input" style="width:280px;padding-left:0px;" id="newPasswordOnce"
-                                type="password" placeholder="请输入8-16位，大小写字母+数字的组合密码" maxlength="16">
-                            <span class="empty-ico"></span>
-                        </div>
+                    <li class="msg-ipt-item class:msg-ipt-item">
+                        <input type="text" id="rEmailCode" placeholder="输入4位数验证码" maxlength="4">
+                        <label class="form-ipt-error errorico-em" id="form-ipt-error-r-email-code">请输入验证码</label>
+                        <span class="send-msg-email-code-btn" onclick="javascript:void(0);">60s 后重发</span>
                     </li>
                 </ul>
-                <p class="error-password"></p>
+                <span class="wall-sub-btn wall-sub-btn-jump" id="btn-sign_up"
+                    onclick="sign_up_mobile_or_email();">进入智慧树</span>
             </div>
-            <div class="modify-password-btn course-layer-btn" style="padding-top: 60px !important;">
-                <a class="btn1 btn0" onclick="modifyPassword()">确定</a>
+            <!-- 输入短信验证码弹窗 -->
+
+            <!-- 找回密码弹窗 -->
+            <div class="forget-ipt-pop" style="display: none;">
+                <div class="find-msg-code-ipt-pop">
+                    <h2 class="msg-code-ipt-tit">找回密码</h2>
+                    <span class="msg-code-instructions">验证码将会发送至您的注册手机</span>
+                    <ul class="wall-form-ipt-list">
+                        <li>
+                            <input type="text" placeholder="手机号" onfocus="hideErrorInfo('form-ipt-error-find');"
+                                id="findUsername">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-find">该手机号尚未注册智慧树</label>
+                            <i></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="pic-code-item">
+                            <input type="text" placeholder="请输入验证码" id="findImgCode" maxlength="4"
+                                onfocus="hideErrorInfo('form-ipt-error-code-find');"
+                                onblur="findpwd.validateImgCode();">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-code-find">请输入正确的验证码</label>
+                            <img class="pic-validate-code" id="imgCodeByFindPwd" style="cursor: pointer;"
+                                title="看不清？换一张" onclick="getvalidateCode('imgCodeByFindPwd');"
+                                src="/user/imageCaptcha?">
+                            <i class="pic-code-icon"></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                    </ul>
+                    <span class="wall-sub-btn wall-sub-btn-jump" id="getValidateCode"
+                        onclick="findpwd.sendMsg();">获取验证码</span>
+                    <p class="other-signin-way-ques" style="margin: 15px auto 5px;padding-bottom: 15px;">
+                        <a class="fl" onclick="forget_phone.pop('忘记手机号')">忘记手机号</a>
+                        <a class="js-service-support fr">联系客服</a>
+                    </p>
+                </div>
+                <div class="find-msg-code-ipt-pop" style="display: none;">
+                    <span class="fall-back" title="返回"></span>
+                    <h2 class="msg-code-ipt-tit">重设密码</h2>
+                    <span class="msg-code-instructions">验证码将会发送至您的注册手机</span>
+                    <ul class="wall-form-ipt-list">
+                        <li>
+                            <input type="text" id="fUsernamePop" disabled="disabled">
+                            <i></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="msg-ipt-item">
+                            <input type="text" placeholder="请输入手机验证码" id="findMobileCode" maxlength="4"
+                                onfocus="hideErrorInfo('form-ipt-error-find-mobile-code');"
+                                onblur="findpwd.validateMobileCode();">
+                            <label class="form-ipt-error errorico-em"
+                                id="form-ipt-error-find-mobile-code">请输入正确的短信验证码</label>
+                            <i class="message-icon"></i>
+                            <em class="Partitionline-em"></em>
+                            <span class="send-msg-code-btn" id="send-msg-code-btn-find">60s 后重发</span>
+                        </li>
+                        <li class="pw-code-item">
+                            <input type="hidden" id="findPassword">
+                            <input class="ipt-password-show" id="ipt-password-show"
+                                onfocus="hideErrorInfo('form-ipt-error-find-password');"
+                                onblur="findpwd.validatePassword('ipt-password-show');" style="display: none;"
+                                type="text" placeholder="请输入8-16位，大小写字母+数字的组合密码">
+                            <input class="ipt-password-hide" id="ipt-password-hide"
+                                onfocus="hideErrorInfo('form-ipt-error-find-password');"
+                                onblur="findpwd.validatePassword('ipt-password-hide');" type="password"
+                                placeholder="请输入8-16位，大小写字母+数字的组合密码">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-find-password">请输入密码</label>
+                            <i class="pasword-icon"></i>
+                            <em class="Partitionline-em"></em>
+                            <span class="wall-icon show-password-find" id="showAndHidePassword" title="显示密码"></span>
+                        </li>
+                    </ul>
+                    <span class="wall-sub-btn wall-sub-btn-jump" onclick="findpwd.resetPassword();">重设密码</span>
+                    <p class="other-signin-way-ques" style="margin: 46px auto 5px;">如登录、注册遇到问题，请<a
+                            class="js-service-support"> 联系客服</a></p>
+                </div>
             </div>
-        </div>
-        <!-- 修改密码  pop-->
+            <!-- 找回密码弹窗 -->
+            <form action="https://passport.zhihuishu.com/user/nameMatchForward" method="post" id="nameMatchForward">
+                <input type="hidden" name="realName" id="chRealName">
+                <input type="hidden" name="code" id="chCode">
+                <input type="hidden" name="schoolId" id="chSchoolId">
+                <input type="hidden" name="flag" id="chFlag">
+                <input type="hidden" name="pwd" id="chPwd">
+                <input type="hidden" name="service" id="chService">
+                <input type="hidden" name="initPwd" id="chInitPwd">
+                <input type="hidden" name="loginType" id="chLoginType">
+            </form>
+            <!-- 姓名验证弹框 -->
+            <div class="nameMatch-pop" style="display: none;">
+                <input type="hidden" value="" id="clRealName">
+                <div class="nameMatch-title">输入姓名</div>
+                <p class="nameMatch-p">请输入你的姓名，确保学号无误</p>
+                <div class="nameMatch-main-wrap">
+                    <input class="nameMatch-text" type="text" maxlength="1" id="clRealNameMatch"
+                        onfocus="userindex.clearErrorNameMatch();"><span class="name-sp-info" id="realnameMatch"></span>
+                    <!--移除notMatch-tips显示输入框-->
+                    <span class="notMatch-tips errorico-em" id="nameMatchErrorShow"
+                        style="left: 50%; bottom: 6px; margin-left: -44px;">姓名和账户不匹配</span>
+                    <!--移除is-visible提示信息隐藏-->
+                </div>
+                <span class="identifyMatch wall-sub-btn" style="margin: 30px auto 0;"
+                    onclick="userindex.nameMatch();">确定</span>
+            </div>
+            <!-- 姓名验证弹框  -->
 
-        <!--忘记手机号 start-->
-        <div class="accountPopall-div ForgetPhonepop layui-form" id="addStaff2" style="display: none;">
-            <div class="Accountcancellation-box">
-                <div class="Accountcancellation-div ForgetPhonepop nano has-scrollbar">
-                    <div class="content">
-                        <div class="ForgetPhonestep-div">
-                            <ul id="forget_phone_switch_tab">
-                                <li>
-                                    <span class="number-span cur">1</span>
-                                    <p>身份信息输入</p>
-                                    <em></em>
-                                </li>
-                                <li>
-                                    <span class="number-span">2</span>
-                                    <p>手机号验证</p>
-                                    <em></em>
-                                </li>
-                                <li>
-                                    <span class="number-span">3</span>
-                                    <p>同学验证</p>
-                                </li>
-                            </ul>
-                        </div>
-                        <!--身份信息输入 start-->
-                        <div class="ForgetPhoneFirstStep-div" id="forget_phone_checkInfo">
-                            <ul>
-                                <li class="clearfix">
-                                    <label class="fl">学校</label>
-                                    <div class="inputdiv fl">
-                                        <input type="text" id="forget_phone_school" placeholder="请输入你的学校名称"
-                                            onkeyup="forget_phone.nextClickAble(0)" name="email_code"
-                                            class="untext_input fl">
-                                    </div>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="fl">学号</label>
-                                    <div class="inputdiv fl">
-                                        <input type="text" id="forget_phone_code" placeholder="请输入你的学号"
-                                            onkeyup="forget_phone.nextClickAble(0)" name="email_code"
-                                            class="untext_input fl">
-                                    </div>
-                                </li>
-                                <li class="clearfix">
-                                    <label class="fl">姓名</label>
-                                    <div class="inputdiv fl">
-                                        <input type="text" id="forget_phone_name" placeholder="请输入你的姓名"
-                                            onkeyup="forget_phone.nextClickAble(0)" name="email_code"
-                                            class="untext_input fl">
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <!--身份信息输入 end-->
-                        <!--手机号验证 start-->
-                        <div class="ForgetPhoneSecondStep-div" id="forget_phone_checkPhone" style="display: none;">
-                            <ul>
-                                <li class="clearfix">
-                                    <div class=""><label>原绑定的手机号</label><span class="Bindphone-span"></span></div>
-                                    <div class="inputdiv">
-                                        <input type="text" placeholder="请输入完整的原绑定手机号" id="forget_phone_oldPhone"
-                                            onkeyup="forget_phone.checkOldPhone();forget_phone.nextClickAble(1)"
-                                            name="email_code" class="untext_input fl">
-                                        <span class="errorfont" style="display:none;"></span>
-                                    </div>
-                                </li>
-                                <li class="clearfix">
-                                    <div class=""><label>绑定新手机号</label></div>
-                                    <div class="inputdiv">
-                                        <input type="text" placeholder="请输入绑定的新手机号" id="forget_phone_newPhone"
-                                            onkeyup="forget_phone.checkNewPhone();forget_phone.nextClickAble(1)"
-                                            name="email_code" class="untext_input fl">
-                                        <span class="errorfont" style="display:none;"></span>
-                                    </div>
-                                </li>
-                                <li class="clearfix">
-                                    <div class=""><label>验证码</label></div>
-                                    <div class="inputdiv">
-                                        <input type="text" class="codeinput" placeholder="请输入验证码" name="email_code"
-                                            id="forget_phone_mcode" onkeyup="forget_phone.nextClickAble(1)">
-                                        <span class="errorfont" style="display:none;"></span>
-                                        <span class="fr GetVerificationCode unclick " id="forget_phone_sendCode"
-                                            onclick="forget_phone.sendCode(this,$('#forget_phone_newPhone').val().trim())">获取验证码</span>
-                                    </div>
-                                </li>
+            <!-- 无导入姓名验证弹框 -->
+            <div class="nameMatch-pop-w" style="display: none;">
+                <div class="nameMatch-title">输入姓名</div>
+                <p class="nameMatch-p">请输入你的姓名,确保学号无误</p>
+                <div class="nameMatch-main-wrap">
+                    <input class="nameMatch-text-w" placeholder="输入真实姓名" type="text" maxlength="64"
+                        id="wclRealNameMatch" onfocus="userindex.clearErrorNameMatchW();">
+                    <!--移除notMatch-tips显示输入框-->
+                    <span class="notMatch-tips errorico-em" id="nameMatchErrorShowW">请输入姓名</span>
+                    <!--移除is-visible提示信息隐藏-->
+                </div>
+                <span class="identifyMatch wall-sub-btn" onclick="userindex.nameMatchW();">确定</span>
+            </div>
+            <!-- 姓名验证弹框  -->
 
-                            </ul>
+
+            <!-- 无导入姓名验证弹框 -->
+            <div class="notImport-pop" style="display: none;">
+                <div class="zhs-logo"><img
+                        src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/b2eec8eee181439ea6678e6e34cf3cc9.png">
+                </div>
+                <p class="notImport-tips">学校暂未向系统导入你的相关信息，你可以先完善信息，学校一旦完成导入，我们将通过知到App第一时间通知你确认课程</p>
+                <div class="validate-error-tip-btn-wrap clearfix">
+                    <span class="app-tip-btn ws-tip-btn app-pr fl" onclick="">下载App
+                        <span class="app-QrCode"><img
+                                src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/38be50a26e5f441cbd0bddd19dd9a9a5.png"></span>
+                    </span>
+                    <span class="ws-tip-btn fr" onclick="userindex.toPerfectInfo();">去完善</span>
+                </div>
+            </div>
+            <!-- 姓名验证弹框  -->
+
+            <!-- 数据联动弹框 -->
+            <div class="infoTips-pop-t" style="display: none;">
+                <p class="notImport-tips">您输入的信息和数据中心不匹配请核对后重新输入</p>
+                <div class="validate-error-tip-btn-wrap clearfix">
+                    <a class="reenter-link" href="javascript:userindex.closeShujuliandong();">重新输入</a>
+                </div>
+            </div>
+            <!-- 数据联动弹框  -->
+            <!-- 密码简单 pop-->
+            <div class="simplePassword-pop  clearfix" id="simplePassword-div" style="display: none;">
+                <img class="warning-img"
+                    src="//image.zhihuishu.com/zhs/ablecommons/demo/201908/fe4b61657da447328d22cddc5eae973b.png">
+                <p class="simple-password">登录密码过于简单</p>
+                <p class="mdify-tips">为保障您的账户安全请修改密码</p>
+                <div class="modify-password-btn course-layer-btn">
+                    <a class="btn0" onclick="submitSignUp()">暂不修改</a><a class="btn1"
+                        onclick="showModifySimplePass()">立即修改</a>
+                </div>
+            </div>
+            <!-- 密码简单  pop-->
+
+            <!-- 修改密码 pop-->
+            <div class="simplePassword-pop  clearfix" id="revisePassword-div" style="display: none;">
+                <h2 class="revisePassword-tit revisePassword-tit-h2">修改密码</h2>
+                <div class="revisePassword-box clearfix">
+                    <ul class="revisePassword-list clearfix">
+                        <li class="clearfix">
+                            <span class="daily-label fl">密码</span>
+                            <div class="daily-input-inline  fl" style="width: 300px">
+                                <input class="layui-input" style="width:280px;padding-left:0px;" id="oldPassword"
+                                    type="password" placeholder="请输入账号当前密码" maxlength="16">
+                                <span class="empty-ico"></span>
+                            </div>
+                        </li>
+                        <li class="clearfix">
+                            <span class="daily-label fl">新密码</span>
+                            <div class="daily-input-inline  fl" style="width: 300px">
+                                <input class="layui-input" style="width:280px;padding-left:0px;" id="newPassword"
+                                    type="password" placeholder="请输入8-16位，大小写字母+数字的组合密码" maxlength="16">
+                                <span class="empty-ico"></span>
+                            </div>
+                        </li>
+                        <li class="clearfix">
+                            <span class="daily-label fl">确认密码</span>
+                            <div class="daily-input-inline  fl" style="width: 300px">
+                                <input class="layui-input" style="width:280px;padding-left:0px;" id="newPasswordOnce"
+                                    type="password" placeholder="请输入8-16位，大小写字母+数字的组合密码" maxlength="16">
+                                <span class="empty-ico"></span>
+                            </div>
+                        </li>
+                    </ul>
+                    <p class="error-password"></p>
+                </div>
+                <div class="modify-password-btn course-layer-btn" style="padding-top: 60px !important;">
+                    <a class="btn1 btn0" onclick="modifyPassword()">确定</a>
+                </div>
+            </div>
+            <!-- 修改密码  pop-->
+
+            <!--忘记手机号 start-->
+            <div class="accountPopall-div ForgetPhonepop layui-form" id="addStaff2" style="display: none;">
+                <div class="Accountcancellation-box">
+                    <div class="Accountcancellation-div ForgetPhonepop nano has-scrollbar">
+                        <div class="content">
+                            <div class="ForgetPhonestep-div">
+                                <ul id="forget_phone_switch_tab">
+                                    <li>
+                                        <span class="number-span cur">1</span>
+                                        <p>身份信息输入</p>
+                                        <em></em>
+                                    </li>
+                                    <li>
+                                        <span class="number-span">2</span>
+                                        <p>手机号验证</p>
+                                        <em></em>
+                                    </li>
+                                    <li>
+                                        <span class="number-span">3</span>
+                                        <p>同学验证</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--身份信息输入 start-->
+                            <div class="ForgetPhoneFirstStep-div" id="forget_phone_checkInfo">
+                                <ul>
+                                    <li class="clearfix">
+                                        <label class="fl">学校</label>
+                                        <div class="inputdiv fl">
+                                            <input type="text" id="forget_phone_school" placeholder="请输入你的学校名称"
+                                                onkeyup="forget_phone.nextClickAble(0)" name="email_code"
+                                                class="untext_input fl">
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <label class="fl">学号</label>
+                                        <div class="inputdiv fl">
+                                            <input type="text" id="forget_phone_code" placeholder="请输入你的学号"
+                                                onkeyup="forget_phone.nextClickAble(0)" name="email_code"
+                                                class="untext_input fl">
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <label class="fl">姓名</label>
+                                        <div class="inputdiv fl">
+                                            <input type="text" id="forget_phone_name" placeholder="请输入你的姓名"
+                                                onkeyup="forget_phone.nextClickAble(0)" name="email_code"
+                                                class="untext_input fl">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--身份信息输入 end-->
+                            <!--手机号验证 start-->
+                            <div class="ForgetPhoneSecondStep-div" id="forget_phone_checkPhone" style="display: none;">
+                                <ul>
+                                    <li class="clearfix">
+                                        <div class=""><label>原绑定的手机号</label><span class="Bindphone-span"></span></div>
+                                        <div class="inputdiv">
+                                            <input type="text" placeholder="请输入完整的原绑定手机号" id="forget_phone_oldPhone"
+                                                onkeyup="forget_phone.checkOldPhone();forget_phone.nextClickAble(1)"
+                                                name="email_code" class="untext_input fl">
+                                            <span class="errorfont" style="display:none;"></span>
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <div class=""><label>绑定新手机号</label></div>
+                                        <div class="inputdiv">
+                                            <input type="text" placeholder="请输入绑定的新手机号" id="forget_phone_newPhone"
+                                                onkeyup="forget_phone.checkNewPhone();forget_phone.nextClickAble(1)"
+                                                name="email_code" class="untext_input fl">
+                                            <span class="errorfont" style="display:none;"></span>
+                                        </div>
+                                    </li>
+                                    <li class="clearfix">
+                                        <div class=""><label>验证码</label></div>
+                                        <div class="inputdiv">
+                                            <input type="text" class="codeinput" placeholder="请输入验证码" name="email_code"
+                                                id="forget_phone_mcode" onkeyup="forget_phone.nextClickAble(1)">
+                                            <span class="errorfont" style="display:none;"></span>
+                                            <span class="fr GetVerificationCode unclick " id="forget_phone_sendCode"
+                                                onclick="forget_phone.sendCode(this,$('#forget_phone_newPhone').val().trim())">获取验证码</span>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!--手机号验证 end-->
+                            <!--同学验证 start-->
+                            <div class="ClassmateVerificationStep-div" id="forget_phone_classShare"
+                                style="display:none;">
+                                <h1>分享给你的同班同学，帮忙验证身份</h1>
+                                <p class="p1">为保障账号安全，需要两位你的同班同学帮忙验证身份，其他人验证无效。</p>
+                                <p class="p2">微信、QQ扫码打开网页，然后将页面链接分享给同学</p>
+                                <div class="QRCodeimg-div"></div>
+                                <p class="p3">若是恶意修改他人账号信息，<br>平台将根据相关法律法规保留起诉权利。</p>
+                            </div>
+                            <!--同学验证 end-->
                         </div>
-                        <!--手机号验证 end-->
-                        <!--同学验证 start-->
-                        <div class="ClassmateVerificationStep-div" id="forget_phone_classShare" style="display:none;">
-                            <h1>分享给你的同班同学，帮忙验证身份</h1>
-                            <p class="p1">为保障账号安全，需要两位你的同班同学帮忙验证身份，其他人验证无效。</p>
-                            <p class="p2">微信、QQ扫码打开网页，然后将页面链接分享给同学</p>
-                            <div class="QRCodeimg-div"></div>
-                            <p class="p3">若是恶意修改他人账号信息，<br>平台将根据相关法律法规保留起诉权利。</p>
-                        </div>
-                        <!--同学验证 end-->
                     </div>
+                    <!--步骤按钮 start-->
+                    <div class="btndiv">
+                        <div class="errorhint-div" id="forget_phone_error_msg" style="display: none;"></div>
+                        <span class="btnspan unclick" id="forget_phone_next_btn">下一步</span>
+                        <a class="js-service-support fr" id="contacter" style="display: none">联系客服</a>
+                    </div>
+                    <!-- 步骤按钮 end-->
                 </div>
-                <!--步骤按钮 start-->
-                <div class="btndiv">
-                    <div class="errorhint-div" id="forget_phone_error_msg" style="display: none;"></div>
-                    <span class="btnspan unclick" id="forget_phone_next_btn">下一步</span>
-                    <a class="js-service-support fr" id="contacter" style="display: none">联系客服</a>
+            </div>
+            <!--忘记手机号 pop end-->
+
+
+
+
+            <div class="teacherVerification-div" id="teacherVerification" style="display: none">
+                <p>为保障您的账号安全，您需使用验证码登录（验证码短信接收手机尾号为：<span class="VerificationCode-span"></span>），请输入验证码登录。</p>
+                <div class="VerificationCodeinput-div clearfix">
+                    <em class="ico-em"></em>
+                    <span class="errorico-em" style="display: none">验证码错误</span>
+                    <em class="Partitionline-em"></em>
+                    <input type="text" placeholder="请输入短信验证码" name="email_code" id="checkCode" class="fl">
+                    <span class="VerificationCodefont-span fr" id="sendCode"></span>
                 </div>
-                <!-- 步骤按钮 end-->
+                <div class="VerificationCodebtn-div" onclick="checkCodeClick(this)">
+                    验证
+                </div>
+            </div>
+
+            <div class="lockingdiv" id="lockingdiv" style="display: none">
+                <img
+                    src="https://image.zhihuishu.com/zhs_yufa_150820/ablecommons/demo/201912/ff80453465fc4c7dae24ac9a88f606b1.png">
+                <p>请用手机号登录，若未绑定手机号请联系客服绑定手机号后登录</p>
+                <div class="servicebtn-div"><span class="js-service-support" onclick="layer.closeAll()">联系客服</span>
+                </div>
             </div>
         </div>
-        <!--忘记手机号 pop end-->
-
-
-
-
-        <div class="teacherVerification-div" id="teacherVerification" style="display: none">
-            <p>为保障您的账号安全，您需使用验证码登录（验证码短信接收手机尾号为：<span class="VerificationCode-span"></span>），请输入验证码登录。</p>
-            <div class="VerificationCodeinput-div clearfix">
-                <em class="ico-em"></em>
-                <span class="errorico-em" style="display: none">验证码错误</span>
-                <em class="Partitionline-em"></em>
-                <input type="text" placeholder="请输入短信验证码" name="email_code" id="checkCode" class="fl">
-                <span class="VerificationCodefont-span fr" id="sendCode"></span>
-            </div>
-            <div class="VerificationCodebtn-div" onclick="checkCodeClick(this)">
-                验证
-            </div>
-        </div>
-
-        <div class="lockingdiv" id="lockingdiv" style="display: none">
-            <img
-                src="https://image.zhihuishu.com/zhs_yufa_150820/ablecommons/demo/201912/ff80453465fc4c7dae24ac9a88f606b1.png">
-            <p>请用手机号登录，若未绑定手机号请联系客服绑定手机号后登录</p>
-            <div class="servicebtn-div"><span class="js-service-support" onclick="layer.closeAll()">联系客服</span></div>
-        </div>
-
     </body>
 
 </html>

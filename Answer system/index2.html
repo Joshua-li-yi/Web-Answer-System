@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>答题系统</title>
+    <link rel="icon" href="./img/nankai badge.png" style="width: auto;">
+    <link rel="stylesheet" href="./css/index2.css" />
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 官网提供的 axios 在线地址 -->
+    <!-- <script src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <script src="./js/index2.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="signInWnd">
+        <div id='signInIcon'>
+            <img src="./img/nankai badge.png" alt="">
+        </div>
+        <!-- 选择登陆方式 -->
+        <div id="chooseSignInway">
+            <!-- {{a}}
+            {{phoneWayShow}}
+            {{studentIDWayShow}}
+            {{techerIDWayShow}} -->
+            <span @click='phoneWay'>手机号</span>
+            <span @click='studentIDWay'>学号</span>
+            <span @click='teacherIDWay'>教师工号登录</span>
+            <a id="qSignup" class="registerNum-btn fr" href="javascript:userindex.forwardRegister(-1);"
+                style="right: 0;">注册</a>
+        </div>
+        <!-- 登陆信息 -->
+        <div id='signInInfo'>
+            <form action="https://passport.zhihuishu.com/login" method="post" id="f_sign_up">
+                <!--手机号-->
+                <ul class="phoneNumber-list" v-if='phoneWayShow'>
+                    <div id="phoneNumberSignIn">
+                        <li>
+                            <p>
+                                <i class="phone-icon">
+                                    <img src="./img/loginPhone.png" alt="" width="20px">
+                                </i>
+                                <input type="text" placeholder="请输入手机号" value=""
+                                    onfocus="hideErrorInfo('form-ipt-error-l-username');" name="username" id="lUsername"
+                                    v-model='phoneNumber'>
+                                <!-- <h2>{{phoneNumber}}</h2> -->
+                                <!-- <span class="form-ipt-error errorico-em" id="form-ipt-error-l-username">请输入手机号</span> -->
+                                <em class="Partitionline-em"></em>
+                            </p>
+                        </li>
+                        <li class="clearPassword-ico">
+                            <i class="pasword-icon">
+                                <img src="./img/loginLock.png" alt="" width="20px">
+                            </i>
+                            <input type="password" placeholder="请输入密码" value="" name="password"
+                                onfocus="hideErrorInfo('form-ipt-error-l-password');" id="lPassword" v-model='phonePwd'>
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-l-password">请输入密码</label>
+                            <!-- <h2>{{phonePwd}}</h2> -->
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="pic-code-item" id="lPwdError" style="display:none;">
+                            <input type="hidden" id="lpwdErrorShow">
+                            <input type="text" id="j-captcha-mobile" placeholder="输入验证码"
+                                onfocus="hideErrorInfo('form-ipt-mobile-img-error');" maxlength="4">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-mobile-img-error">请填写验证码</label>
+                            <i class="pic-code-icon"></i>
+                            <img id="j-captcha-img" class="pic-validate-code" onclick="getvalidateCode('j-captcha-img')"
+                                alt="图片验证码" title="看不清？换一张" src="/user/imageCaptcha" style="cursor: pointer;">
+                            <em class="Partitionline-em"></em>
+                        </li>
+                    </div>
+                </ul>
+                <!--手机号-->
+                <!--学号-->
+                <ul class="studentID-list" v-if='studentIDWayShow'>
+                    <div id="studentIDSignIn">
+                        <li>
+                            <input type="text" placeholder="大学学号" autocomplete="off" value=""
+                                onfocus="hideErrorInfo('form-ipt-error-cl-code');" maxlength="40" name="clCode"
+                                id="clCode">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-cl-code">学号不能为空</label>
+                            <i class="number-icon"></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="clearPassword-ico">
+                            <input type="password" placeholder="密码" autocomplete="off" value="" name="clPassword"
+                                maxlength="40" onfocus="hideErrorInfo('form-ipt-error-cl-password');" id="clPassword">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-cl-password">密码不能为空</label>
+                            <i class="pasword-icon"></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="pic-code-item" id="tPwdError" style="display:none;">
+                            <i class="pic-code-icon"></i>
+                            <em class="Partitionline-em"></em>
+                            <input type="hidden" id="tpwdErrorShow">
+                            <input type="text" id="j-captcha-code" placeholder="输入验证码"
+                                onfocus="hideErrorInfo('form-ipt-code-img-error');" maxlength="4">
+                            <img id="j-captcha-img-code" class="pic-validate-code"
+                                onclick="getvalidateCode('j-captcha-img-code')" alt="图片验证码" title="看不清？换一张"
+                                src="/user/imageCaptcha" style="cursor: pointer;">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-code-img-error">请填写验证码</label>
+                        </li>
+                    </div>
+                </ul>
+                <!--学号-->
+                <!--教师工号-->
+                <ul class="teacherID-list " v-if='techerIDWayShow'>
+                    <div id="techerIDSignIn">
+
+                        <li>
+                            <input type="text" placeholder="请输入教师工号" autocomplete="off" value="" maxlength="40"
+                                onfocus="hideErrorInfo('form-ipt-error-tl-code');" name="tlCode" id="tlCode">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-tl-code">请输入教师工号</label>
+                            <i class="jgnumber-icon"></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="clearPassword-ico">
+                            <input type="password" placeholder="请输入密码" autocomplete="off" value="" maxlength="40"
+                                name="tlPassword" onfocus="hideErrorInfo('form-ipt-error-tl-password');"
+                                id="tlPassword">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-error-tl-password">请输入密码</label>
+                            <i class="pasword-icon"></i>
+                            <em class="Partitionline-em"></em>
+                        </li>
+                        <li class="pic-code-item" id="tcPwdError" style="display:none;">
+                            <input type="hidden" id="tcpwdErrorShow">
+                            <input type="text" id="j-captcha-tcode" placeholder="请输入验证码"
+                                onfocus="hideErrorInfo('form-ipt-tcode-img-error');" maxlength="4">
+                            <label class="form-ipt-error errorico-em" id="form-ipt-tcode-img-error">请输入验证码</label>
+                            <i class="pic-code-icon"></i>
+                            <em class="Partitionline-em"></em>
+                            <img id="j-captcha-img-tcode" class="pic-validate-code"
+                                onclick="getvalidateCode('j-captcha-img-tcode')" alt="图片验证码" title="看不清？换一张"
+                                src="/user/imageCaptcha" style="cursor: pointer;">
+                        </li>
+                    </div>
+                </ul>
+                <span class="wall-sub-btn" @click="signIn">登&nbsp;&nbsp;录</span>
+                <div class="signin-misc-wrap clearfix">
+                    <label class="remember-btn fl">
+                        <input type="checkbox" name="remember" checked="">记住我
+                    </label>
+                    <!-- <img src="//image.zhihuishu.com/zhs/ablecommons/demo/201907/eaa1099005894a228eb94c3b1573995e.png"
+                        class="remember-img"> -->
+                    <a class="forget-btn fr" href="javascript:void(0);" style="right: 0;">忘记密码</a>
+
+                </div>
+            </form>
+        </div>
+        <div>
+            <div id="bottomDiv">
+                <div class="other-signin-way-tit"><span>其他登录方式</span></div>
+                <ul class="other-signin-way-list clearfix">
+                    <li class="signin-way-qq fl"><a class="wall-icon wall-qq"
+                            href="https://graph.qq.com/oauth2.0/authorize?response_type=code&amp;client_id=101137284&amp;redirect_uri=http%3A%2F%2Fuser.zhihuishu.com%2Fopen%2FQQCallbackDispatcher.do%3Fclient_name%3DQQClient&amp;state=a052nNub6K"></a><span
+                            class="wall-icon"></span></li>
+
+                    <li class="signin-way-shjiaoyu"><a class="wall-icon wall-weixin"
+                            href="https://open.weixin.qq.com/connect/qrconnect?appid=wx2734fc59fbd00c95&amp;redirect_uri=https://user.zhihuishu.com/zhsuser/oauth/weixin/wxLogin?service=https://onlineservice.zhihuishu.com/login/gologin&amp;response_type=code&amp;scope=snsapi_login&amp;state=STATE#wechat_redirect"></a><span
+                            class="wall-icon"></span></li>
+                </ul>
+                <p class="other-signin-way-ques" id="other-signin-way-ques-p"
+                    style="position:absolute;bottom:57px; left:30px;">如登录、注册遇到问题，请<a class="js-service-support">
+                        联系客服</a></p>
+            </div>
+            <div id="bottomTchDiv">
+                <div class="login-bottom-box">
+                    <div class="other-signin-way-tit"><span>其他登录方式</span></div><a class="tch-back"
+                        href="https://passport.zhihuishu.com/login#signin">手机号/学号登录</a>
+                    <p class="other-signin-way-ques" style="margin: 30px auto 0;">如登录、注册遇到问题，请<a
+                            class="js-service-support"> 联系客服</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 开发环境版本，包含了有帮助的命令行警告 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="./js/index2.js" type="text/javascript"></script>
+
+</body>
+
+</html>
