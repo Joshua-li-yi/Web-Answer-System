@@ -11,10 +11,9 @@ var SigeInWnd = new Vue({
     methods: {
         phoneWay: function () {
             this.phoneWayShow = true;
-
             this.studentIDWayShow = false;
             this.techerIDWayShow = false;
-            this.a = 1223;
+            // this.a = 1223;
         },
         studentIDWay: function () {
             this.phoneWayShow = false;
@@ -28,6 +27,6 @@ var SigeInWnd = new Vue({
         },
         signIn:function(){
             window.location.href="/webpage/answer.html";
-        }
+        },
     }
 });

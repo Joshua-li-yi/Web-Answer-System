@@ -11,10 +11,11 @@ window.onload = function () {
             imges: [
                     // 'img/banner1.jpg',
                     // 'img/banner2.jpg',
-                    '/img/banner3.jpg',
-                    '/img/banner4.jpg',
+                    // '/img/banner3.jpg',
+                    // '/img/banner4.jpg',
                     // 'img/banner5.jpg',
                     // 'img/logo.gif',
+                    '/img/nankai building.jpg'
                 ],
             imgess: [
                 '/img/logo.gif',
