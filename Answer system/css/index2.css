@@ -17,23 +17,23 @@
 #signInIcon img{
     /* width: 145px; */
     /* left: 50%; */
-    margin-left: 100px;
+    margin-left: 230px;
 }
 #chooseSignInway{
     width: 100%;
 }
-#chooseSignInway span{
+/* #chooseSignInway span{ */
     /* display: inline-block; */
     /* width: 60px; */
-    height: 25px;
+    /* height: 25px;
     line-height: 25px;
     font-size: 14px;
-    color: #777;
+    color: #777; */
     /* transition: all ease-in .2s; */
     /* float: left; */
     /* margin-right: 20px; */
-    text-align: center;
-}
+    /* text-align: center;
+} */
 /* #signInInfo ul li {
     right: 0;
     position: relative;
@@ -46,13 +46,11 @@
 #signInInfo input {
     background: #F6F6F6;
     border: 1px solid #EDEDED;
-    /* width: 280px; */
-    /* padding-left: 45px; */
     height: 40px;
     line-height: 40px;
     font-size: 14px;
     color: #3D4059;
-    /* box-sizing: border-box; */
+    width: 450px;
 }
 
 
